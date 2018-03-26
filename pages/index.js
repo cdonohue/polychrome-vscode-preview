@@ -278,6 +278,7 @@ export default class App extends React.Component {
             padding: 6px 6px 4px 6px;
             border-radius: 2px;
             font-size: 1rem;
+            font-weight: 400;
             margin-top: -2px;
             color: ${this.state.background};
           }
