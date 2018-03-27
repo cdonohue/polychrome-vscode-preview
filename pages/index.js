@@ -18,10 +18,6 @@ export default class App extends React.Component {
     showOverlay: false,
   }
 
-  getInitialProps(props) {
-    console.log(props)
-  }
-
   componentDidMount() {
     const { url } = this.props
 
@@ -29,6 +25,7 @@ export default class App extends React.Component {
 
     if (query) {
       const { primary, accent, background } = query;
+      console.log(query)
 
       this.setState({
         primary: primary ? `#${primary}` : this.state.primary,
@@ -43,6 +40,7 @@ export default class App extends React.Component {
 
   updateUrl = () => {
     window.history.pushState('', '', `?primary=${this.state.primary.replace("#", "")}&accent=${this.state.accent.replace("#", "")}&background=${this.state.background.replace("#", "")}`)
+    console.log("updating url...", )
     this.setState({ currentUrl: window.location.href });
   }
 
@@ -140,14 +138,15 @@ export default class App extends React.Component {
         </div>
         <div className="content">
           <div className="presets">
-            <div className="preset-button dark-space" onClick={this.handlePresetClick} style={{ "--primary": "#a59ccc", "--accent": "#ffe685", "--background": "#2a2833" }}>Default</div>
+            <div className="preset-button dark-space" onClick={this.handlePresetClick} style={{ "--primary": "#a59ccc", "--accent": "#ffe685", "--background": "#2a2833" }}>Dark</div>
             <div className="preset-button dark-space" onClick={this.handlePresetClick} style={{ "--primary": "#7272a1", "--accent": "#fe7734", "--background": "#24242e" }}>Space</div>
             <div className="preset-button dark-forest" onClick={this.handlePresetClick} style={{ "--primary": "#869886", "--accent": "#e7f98b", "--background": "#232523" }}>Forest</div>
             <div className="preset-button dark-earth" onClick={this.handlePresetClick} style={{ "--primary": "#98755d", "--accent": "#fecb52", "--background": "#2c2826" }}>Earth</div>
             <div className="preset-button dark-sky" onClick={this.handlePresetClick} style={{ "--primary": "#ae91e8", "--accent": "#fec38f", "--background": "#2c2734" }}>Sky</div>
             <div className="preset-button dark-sea" onClick={this.handlePresetClick} style={{ "--primary": "#5d8cc0", "--accent": "#34febb", "--background": "#1d262f" }}>Sea</div>
             <div className="preset-button dark-bee" onClick={this.handlePresetClick} style={{ "--primary": "#cccccc", "--accent": "#ffdc00", "--background": "#222222" }}>Bee</div>
-            <div className="preset-button light" onClick={this.handlePresetClick} style={{ "--primary": "#6B3DF1", "--accent": "#A97E50", "--background": "#FBFAF9" }}>Inverse</div>
+            <div className="preset-button light" onClick={this.handlePresetClick} style={{ "--primary": "#6B3DF1", "--accent": "#A97E50", "--background": "#FBFAF9" }}>Light</div>
+            <div className="preset-button light" onClick={this.handlePresetClick} style={{ "--primary": "#999999", "--accent": "#000000", "--background": "#FFFFFF" }}>Apex</div>
           </div>
           <div className="container">
             <div className="inputs">
@@ -300,7 +299,7 @@ export default class App extends React.Component {
             display: grid;
             grid-gap: calc(var(--spacer) / 2);
             margin-bottom: var(--spacer);
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
           }
 
           .preset-button {
@@ -358,10 +357,13 @@ export default class App extends React.Component {
 
           .color-swatch {
             display: flex;
-            border-radius: 8px;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 0 rgba(0,0,0,.26);
             overflow: hidden;
-            width: 100%;
+            width: auto;
             margin: var(--spacer) 0;
+            background: ${this.state.background}
+            padding: calc(var(--spacer) / 2);
           }
 
           .color-swatch > div {
@@ -372,6 +374,7 @@ export default class App extends React.Component {
 
           .color-swatch > div:nth-child(1) {
             background: ${theme.primary1};
+            border-radius: 8px 0 0 8px;
           }
 
           .color-swatch > div:nth-child(2) {
@@ -400,6 +403,7 @@ export default class App extends React.Component {
 
           .color-swatch > div:nth-child(8) {
             background: ${theme.accent3};
+            border-radius: 0 8px 8px 0;
           }
 
           .btn-input div {
