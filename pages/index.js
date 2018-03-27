@@ -2,6 +2,7 @@ import ColorInput from "../components/ColorInput"
 import CodeWindow from "../components/CodeWindow"
 import Overlay from "../components/Overlay"
 import generateTheme from "../utils/generateTheme"
+import queryString from "query-string"
 import color from "polychrome"
 
 export default class App extends React.Component {
@@ -18,19 +19,11 @@ export default class App extends React.Component {
     showOverlay: false,
   }
 
-  getInitialProps(args) {
-    console.log(args)
-  }
-
   componentDidMount() {
-    const { url } = this.props
-    console.log(this.props)
+    const params = window.location.search
 
-    const { query } = url
-
-    if (query) {
-      const { primary, accent, background } = query;
-      console.log(query)
+    if (params.length) {
+      const { primary, accent, background } = queryString.parse(params);
 
       this.setState({
         primary: primary ? `#${primary}` : this.state.primary,
