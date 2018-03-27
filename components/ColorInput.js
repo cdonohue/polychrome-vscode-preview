@@ -1,9 +1,10 @@
 import color from "polychrome"
+import { debounce } from "lodash"
 import getColorName from "../utils/getColorName"
 
 export default (props) => {
-  function onColorChange(e) {
-    props.onChange(props.label, e.target.value);
+  const onColorChange = (e) => {
+    props.onChange(props.label, e.target.value)
   }
 
   return (

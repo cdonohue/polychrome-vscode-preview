@@ -1,3 +1,4 @@
+import Head from "next/head"
 import ColorInput from "../components/ColorInput"
 import CodeWindow from "../components/CodeWindow"
 import Overlay from "../components/Overlay"
@@ -22,18 +23,16 @@ export default class App extends React.Component {
   componentDidMount() {
     const params = window.location.search
 
-    if (params.length) {
-      const { primary, accent, background } = queryString.parse(params);
+    const { primary, accent, background } = queryString.parse(params);
 
-      this.setState({
-        primary: primary ? `#${primary}` : this.state.primary,
-        accent: accent ? `#${accent}` : this.state.accent,
-        background: background ? `#${background}` : this.state.background,
-        inputPrimary: primary ? `#${primary}` : this.state.primary,
-        inputAccent: accent ? `#${accent}` : this.state.accent,
-        inputBackground: background ? `#${background}` : this.state.background,
-      }, this.updateUrl)
-    }
+    this.setState({
+      primary: primary ? `#${primary}` : this.state.primary,
+      accent: accent ? `#${accent}` : this.state.accent,
+      background: background ? `#${background}` : this.state.background,
+      inputPrimary: primary ? `#${primary}` : this.state.primary,
+      inputAccent: accent ? `#${accent}` : this.state.accent,
+      inputBackground: background ? `#${background}` : this.state.background,
+    }, this.updateUrl)
   }
 
   updateUrl = () => {
@@ -121,10 +120,15 @@ export default class App extends React.Component {
 
   render() {
     const { accent, background, primary, inputAccent, inputBackground, inputPrimary } = this.state;
-    const theme = generateTheme(accent, primary, background);
+    const isDark = color(background).isDark()
+    const theme = generateTheme(accent, primary, background)
 
     return (
       <div className="page">
+        <Head>
+          <title>🎨 Polychrome theme viewer</title>
+          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        </Head>
         <div className="header">
           <div className="hero">
             <h1>Polychrome vs-code theme viewer</h1>
@@ -135,15 +139,18 @@ export default class App extends React.Component {
         </div>
         <div className="content">
           <div className="presets">
-            <div className="preset-button dark-space" onClick={this.handlePresetClick} style={{ "--primary": "#a59ccc", "--accent": "#ffe685", "--background": "#2a2833" }}>Dark</div>
-            <div className="preset-button dark-space" onClick={this.handlePresetClick} style={{ "--primary": "#7272a1", "--accent": "#fe7734", "--background": "#24242e" }}>Space</div>
-            <div className="preset-button dark-forest" onClick={this.handlePresetClick} style={{ "--primary": "#869886", "--accent": "#e7f98b", "--background": "#232523" }}>Forest</div>
-            <div className="preset-button dark-earth" onClick={this.handlePresetClick} style={{ "--primary": "#98755d", "--accent": "#fecb52", "--background": "#2c2826" }}>Earth</div>
-            <div className="preset-button dark-sky" onClick={this.handlePresetClick} style={{ "--primary": "#ae91e8", "--accent": "#fec38f", "--background": "#2c2734" }}>Sky</div>
-            <div className="preset-button dark-sea" onClick={this.handlePresetClick} style={{ "--primary": "#5d8cc0", "--accent": "#34febb", "--background": "#1d262f" }}>Sea</div>
-            <div className="preset-button dark-bee" onClick={this.handlePresetClick} style={{ "--primary": "#cccccc", "--accent": "#ffdc00", "--background": "#222222" }}>Bee</div>
+            <div className="preset-button dark" onClick={this.handlePresetClick} style={{ "--primary": "#a59ccc", "--accent": "#ffe685", "--background": "#2a2833" }}>Dark</div>
+            <div className="preset-button dark space" onClick={this.handlePresetClick} style={{ "--primary": "#7272a1", "--accent": "#fe7734", "--background": "#24242e" }}>Space</div>
+            <div className="preset-button dark forest" onClick={this.handlePresetClick} style={{ "--primary": "#869886", "--accent": "#e7f98b", "--background": "#232523" }}>Forest</div>
+            <div className="preset-button dark earth" onClick={this.handlePresetClick} style={{ "--primary": "#98755d", "--accent": "#fecb52", "--background": "#2c2826" }}>Earth</div>
+            <div className="preset-button dark sky" onClick={this.handlePresetClick} style={{ "--primary": "#ae91e8", "--accent": "#fec38f", "--background": "#2c2734" }}>Sky</div>
+            <div className="preset-button dark sea" onClick={this.handlePresetClick} style={{ "--primary": "#5d8cc0", "--accent": "#34febb", "--background": "#1d262f" }}>Sea</div>
+            <div className="preset-button dark bee" onClick={this.handlePresetClick} style={{ "--primary": "#cccccc", "--accent": "#ffdc00", "--background": "#222222" }}>Bee</div>
+            <div className="preset-button dark gray" onClick={this.handlePresetClick} style={{ "--primary": "#9191a1", "--accent": "#a1bfce", "--background": "#272732" }}>Gray</div>
+            <div className="preset-button dark mono" onClick={this.handlePresetClick} style={{ "--primary": "#929292", "--accent": "#ffffff", "--background": "#222222" }}>Mono</div>
             <div className="preset-button light" onClick={this.handlePresetClick} style={{ "--primary": "#6B3DF1", "--accent": "#A97E50", "--background": "#FBFAF9" }}>Light</div>
-            <div className="preset-button light" onClick={this.handlePresetClick} style={{ "--primary": "#999999", "--accent": "#000000", "--background": "#FFFFFF" }}>Apex</div>
+            <div className="preset-button light snow" onClick={this.handlePresetClick} style={{ "--primary": "#6ba1f4", "--accent": "#d37e7e", "--background": "#FFFFFF" }}>Snow</div>
+            <div className="preset-button light apex" onClick={this.handlePresetClick} style={{ "--primary": "#999999", "--accent": "#000000", "--background": "#FFFFFF" }}>Apex</div>
           </div>
           <div className="container">
             <div className="inputs">
@@ -195,9 +202,9 @@ export default class App extends React.Component {
             </div>
             <div className="snippet">
               <pre>
-                "polychrome.primary": "{primary}",<br />
-                "polychrome.accent": "{accent}",<br />
-                "polychrome.background": "{background}",
+                "polychrome.{isDark ? "dark" : "light"}.primary": "{primary}",<br />
+                "polychrome.{isDark ? "dark" : "light"}.accent": "{accent}",<br />
+                "polychrome.{isDark ? "dark" : "light"}.background": "{background}",
               </pre>
             </div>
             <div className="preview">
@@ -432,7 +439,7 @@ export default class App extends React.Component {
             background: ${this.state.accent};
             color: ${color(this.state.accent).contrast().hex()};
             animation: pulse 4s infinite;
-            box-shadow: inset 0 0 0 3px rgba(0,0,0,.12), 0 3px 4px rgba(0, 0, 0, .12)
+            box-shadow: 0 3px 4px rgba(0, 0, 0, .12)
           }
 
           .btn-input.copy-link:hover {
@@ -476,7 +483,7 @@ export default class App extends React.Component {
             border-radius: 4px;
             font-size: var(--baseFontSize);
             padding: 0 var(--spacer);
-            box-shadow: inset 0 0 0 3px rgba(0,0,0,.12), 0 3px 4px rgba(0, 0, 0, .12);
+            box-shadow: 0 3px 4px rgba(0, 0, 0, .12);
             transition: .2s var(--swiftEasing);
             animation: pulse 4s infinite;
             width: 30%;
@@ -497,10 +504,10 @@ export default class App extends React.Component {
 
           @keyframes pulse {
             60% {
-              box-shadow: inset 0 0 0 3px rgba(0,0,0,.12), 0 3px 4px rgba(0, 0, 0, .12), 0 0 0 0 ${ color(this.state.accent).setAlpha(50).rgb()};
+              box-shadow: 0 3px 4px rgba(0, 0, 0, .12), 0 0 0 0 ${ color(this.state.accent).setAlpha(50).rgb()};
             }
             100% {
-              box-shadow: inset 0 0 0 3px rgba(0,0,0,.12), 0 3px 4px rgba(0, 0, 0, .12), 0 0 100px 12px ${ color(this.state.accent).setAlpha(1).rgb()};
+              box-shadow: 0 3px 4px rgba(0, 0, 0, .12), 0 0 100px 12px ${ color(this.state.accent).setAlpha(1).rgb()};
             }
           }
 
