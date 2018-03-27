@@ -24,6 +24,7 @@ export default class App extends React.Component {
 
   componentDidMount() {
     const { url } = this.props
+    console.log(this.props)
 
     const { query } = url
 
