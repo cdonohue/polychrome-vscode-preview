@@ -38,7 +38,6 @@ export default class App extends React.Component {
 
   updateUrl = () => {
     window.history.pushState('', '', `?primary=${this.state.primary.replace("#", "")}&accent=${this.state.accent.replace("#", "")}&background=${this.state.background.replace("#", "")}`)
-    console.log("updating url...", this.state)
     this.setState({ currentUrl: window.location.href });
   }
 
