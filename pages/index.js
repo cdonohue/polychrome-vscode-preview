@@ -18,6 +18,10 @@ export default class App extends React.Component {
     showOverlay: false,
   }
 
+  getInitialProps(args) {
+    console.log(args)
+  }
+
   componentDidMount() {
     const { url } = this.props
 
