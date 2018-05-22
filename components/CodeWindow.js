@@ -94,7 +94,7 @@ pre.preview code:before {
 `})
 
 export default ({ theme }) => {
-  const { contrast, primary1, primary2, primary3, primary5, accent1, accent2, editorBg, uiBg, uiBorder, lineHighlight, mutedText } = theme;
+  const { contrast, primary1, primary2, primary3, primary5, accent1, accent2, editorBg, sideBarBg, activityBarBg, uiBg, uiBorder, lineHighlight, mutedText } = theme;
   return (
     <div className="window">
       <div className="title-bar"></div>
@@ -139,12 +139,11 @@ export default ({ theme }) => {
 
         .title-bar {
           grid-area: titleBar;
-          background: ${uiBg};
-          border-bottom: 1px solid ${uiBorder};
+          background: ${activityBarBg};
         }
         .side-bar {
           grid-area: sideBar;
-          background: ${uiBg};
+          background: ${sideBarBg};
           border-right: 1px solid ${uiBorder};
           display: none;
         }
@@ -167,8 +166,7 @@ export default ({ theme }) => {
         }
         .status-bar {
           grid-area: statusBar;
-          background: ${uiBg};
-          border-top: 1px solid ${uiBorder};
+          background: ${activityBarBg};
         }
 
         .tab-bar {

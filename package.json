@@ -12,6 +12,7 @@
   "repository": "https://github.com/cdonohue/polychrome-vscode-preview.git",
   "private": false,
   "dependencies": {
+    "downshift": "^1.31.2",
     "next": "^5.0.0",
     "polychrome": "^4.1.2",
     "query-string": "^6.0.0",

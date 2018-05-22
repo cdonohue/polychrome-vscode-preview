@@ -1,10 +1,86 @@
-import Head from "next/head"
-import ColorInput from "../components/ColorInput"
-import CodeWindow from "../components/CodeWindow"
-import Overlay from "../components/Overlay"
-import generateTheme from "../utils/generateTheme"
-import queryString from "query-string"
-import color from "polychrome"
+import Head from "next/head";
+import ColorInput from "../components/ColorInput";
+import CodeWindow from "../components/CodeWindow";
+import Overlay from "../components/Overlay";
+import PresetSelect from "../components/PresetSelect";
+import generateTheme from "../utils/generateTheme";
+import queryString from "query-string";
+import color from "polychrome";
+
+const presets = [
+  {
+    primary: "#a59ccc",
+    accent: "#ffe685",
+    background: "#2a2833",
+    name: "Dark"
+  },
+  {
+    primary: "#7272a1",
+    accent: "#fe7734",
+    background: "#24242e",
+    name: "Space"
+  },
+  {
+    primary: "#869886",
+    accent: "#e7f98b",
+    background: "#232523",
+    name: "Forest"
+  },
+  {
+    primary: "#98755d",
+    accent: "#fecb52",
+    background: "#2c2826",
+    name: "Earth"
+  },
+  {
+    primary: "#ae91e8",
+    accent: "#fec38f",
+    background: "#2c2734",
+    name: "Sky"
+  },
+  {
+    primary: "#5d8cc0",
+    accent: "#34febb",
+    background: "#1d262f",
+    name: "Sea"
+  },
+  {
+    primary: "#ffffff",
+    accent: "#ffdc00",
+    background: "#222222",
+    name: "Bee"
+  },
+  {
+    primary: "#9191a1",
+    accent: "#a1bfce",
+    background: "#272732",
+    name: "Gray"
+  },
+  {
+    primary: "#929292",
+    accent: "#ffffff",
+    background: "#222222",
+    name: "Mono"
+  },
+  {
+    primary: "#6B3DF1",
+    accent: "#A97E50",
+    background: "#FBFAF9",
+    name: "Light"
+  },
+  {
+    primary: "#6ba1f4",
+    accent: "#d37e7e",
+    background: "#FFFFFF",
+    name: "Snow"
+  },
+  {
+    primary: "#999999",
+    accent: "#000000",
+    background: "#FFFFFF",
+    name: "Apex"
+  }
+];
 
 export default class App extends React.Component {
   state = {
@@ -18,183 +94,297 @@ export default class App extends React.Component {
     copiedLink: false,
     copiedInputSnippet: false,
     showOverlay: false,
-  }
+    selectedPreset: {
+      primary: "#a59ccc",
+      accent: "#ffe685",
+      background: "#2a2833",
+      name: "Dark"
+    }
+  };
 
   componentDidMount() {
-    const params = window.location.search
+    const params = window.location.search;
 
     const { primary, accent, background } = queryString.parse(params);
 
-    this.setState({
-      primary: primary ? `#${primary}` : this.state.primary,
-      accent: accent ? `#${accent}` : this.state.accent,
-      background: background ? `#${background}` : this.state.background,
-      inputPrimary: primary ? `#${primary}` : this.state.primary,
-      inputAccent: accent ? `#${accent}` : this.state.accent,
-      inputBackground: background ? `#${background}` : this.state.background,
-    }, this.updateUrl)
+    this.setState(
+      {
+        primary: primary ? `#${primary}` : this.state.primary,
+        accent: accent ? `#${accent}` : this.state.accent,
+        background: background ? `#${background}` : this.state.background,
+        inputPrimary: primary ? `#${primary}` : this.state.primary,
+        inputAccent: accent ? `#${accent}` : this.state.accent,
+        inputBackground: background ? `#${background}` : this.state.background
+      },
+      this.updateUrl
+    );
   }
 
   updateUrl = () => {
-    window.history.pushState('', '', `?primary=${this.state.primary.replace("#", "")}&accent=${this.state.accent.replace("#", "")}&background=${this.state.background.replace("#", "")}`)
+    window.history.pushState(
+      "",
+      "",
+      `?primary=${this.state.primary.replace(
+        "#",
+        ""
+      )}&accent=${this.state.accent.replace(
+        "#",
+        ""
+      )}&background=${this.state.background.replace("#", "")}`
+    );
     this.setState({ currentUrl: window.location.href });
-  }
+  };
 
   colorDidChange = (label, hex) => {
     this.setState({
-      [`input${label}`]: hex,
-    })
+      [`input${label}`]: hex
+    });
 
     try {
-      color(hex)
-      this.setState({
-        [label.toLowerCase()]: hex,
-      }, this.updateUrl)
+      color(hex);
+      this.setState(
+        {
+          [label.toLowerCase()]: hex
+        },
+        this.updateUrl
+      );
     } catch (err) {
-      console.error(err)
-      return
+      console.error(err);
+      return;
     }
-  }
+  };
 
-  handlePresetClick = (e) => {
-    const { style } = e.target;
+  handlePresetChange = preset => {
+    const { accent, background, primary } = preset;
 
     this.setState({
-      primary: style.getPropertyValue("--primary"),
-      accent: style.getPropertyValue("--accent"),
-      background: style.getPropertyValue("--background"),
-      inputPrimary: style.getPropertyValue("--primary"),
-      inputAccent: style.getPropertyValue("--accent"),
-      inputBackground: style.getPropertyValue("--background"),
+      primary,
+      accent,
+      background,
+      inputPrimary: primary,
+      inputAccent: accent,
+      inputBackground: background,
     }, this.updateUrl)
-  }
+  };
 
-  handleCopySnippet = (e) => {
-    window.getSelection().removeAllRanges()
-    const snippetElement = document.querySelector(".snippet pre")
-    const range = document.createRange()
-    range.selectNode(snippetElement)
-    window.getSelection().addRange(range)
+  handleCopySnippet = e => {
+    window.getSelection().removeAllRanges();
+    const snippetElement = document.querySelector(".snippet pre");
+    const range = document.createRange();
+    range.selectNode(snippetElement);
+    window.getSelection().addRange(range);
     try {
-      // Now that we've selected the anchor text, execute the copy command  
-      document.execCommand("copy")
+      // Now that we've selected the anchor text, execute the copy command
+      document.execCommand("copy");
       this.setState({
         copiedSnippet: true,
-        showOverlay: true,
-      })
+        showOverlay: true
+      });
       setTimeout(() => {
-        this.setState({ copiedSnippet: false })
-      }, 4000)
+        this.setState({ copiedSnippet: false });
+      }, 4000);
     } catch (err) {
-      console.log("Oops, unable to copy")
+      console.log("Oops, unable to copy");
     }
 
     window.getSelection().removeAllRanges();
-  }
+  };
 
-  handleCloseOverlay = (e) => {
+  handleCloseOverlay = e => {
     this.setState({
-      showOverlay: false,
-    })
-  }
+      showOverlay: false
+    });
+  };
 
-  handleCopyLink = (e) => {
-    window.getSelection().removeAllRanges()
-    const snippetElement = document.querySelector(".current-url small")
-    const range = document.createRange()
-    range.selectNode(snippetElement)
-    window.getSelection().addRange(range)
+  handleCopyLink = e => {
+    window.getSelection().removeAllRanges();
+    const snippetElement = document.querySelector(".current-url small");
+    const range = document.createRange();
+    range.selectNode(snippetElement);
+    window.getSelection().addRange(range);
     try {
-      // Now that we've selected the anchor text, execute the copy command  
-      document.execCommand("copy")
-      this.setState({ copiedLink: true })
+      // Now that we've selected the anchor text, execute the copy command
+      document.execCommand("copy");
+      this.setState({ copiedLink: true });
       setTimeout(() => {
-        this.setState({ copiedLink: false })
-      }, 4000)
+        this.setState({ copiedLink: false });
+      }, 4000);
     } catch (err) {
-      console.log("Oops, unable to copy")
+      console.log("Oops, unable to copy");
     }
 
     window.getSelection().removeAllRanges();
-  }
+  };
 
   render() {
-    const { accent, background, primary, inputAccent, inputBackground, inputPrimary } = this.state;
-    const isDark = color(background).isDark()
-    const theme = generateTheme(accent, primary, background)
+    const {
+      accent,
+      background,
+      primary,
+      inputAccent,
+      inputBackground,
+      inputPrimary
+    } = this.state;
+    const isDark = color(background).isDark();
+    const theme = generateTheme(accent, primary, background);
 
     return (
       <div className="page">
+        <link rel="stylesheet" href="https://unpkg.com/react-select@1.2.1/dist/react-select.css" />
         <Head>
           <title>🎨 Polychrome theme viewer</title>
-          <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
         </Head>
         <div className="header">
           <div className="hero">
-            <h1>Polychrome vs-code theme viewer</h1>
+            <h1>Polychrome themes</h1>
             <p>
-              Start with a preset below, or add your own values to get started.
+              This utility makes it easy to preview editor themes generated with <a href="https://marketplace.visualstudio.com/items?itemName=cdonohue.polychrome-vscode-themes">Polychrome themes</a> for VS Code.
+            </p>
+            <p>
+              Simply install the theme extension to VS Code using the link above. Then, modify the colors below to generate your favorite duotone theme. Once you are satisfied, simply copy the generated snippet and paste it into your VS Code user settings file.
+            </p>
+            <p>
+              The url on this page will update as you make selections. Share your favorite with your friends!
             </p>
           </div>
         </div>
         <div className="content">
-          <div className="presets">
-            <div className="preset-button dark" onClick={this.handlePresetClick} style={{ "--primary": "#a59ccc", "--accent": "#ffe685", "--background": "#2a2833" }}>Dark</div>
-            <div className="preset-button dark space" onClick={this.handlePresetClick} style={{ "--primary": "#7272a1", "--accent": "#fe7734", "--background": "#24242e" }}>Space</div>
-            <div className="preset-button dark forest" onClick={this.handlePresetClick} style={{ "--primary": "#869886", "--accent": "#e7f98b", "--background": "#232523" }}>Forest</div>
-            <div className="preset-button dark earth" onClick={this.handlePresetClick} style={{ "--primary": "#98755d", "--accent": "#fecb52", "--background": "#2c2826" }}>Earth</div>
-            <div className="preset-button dark sky" onClick={this.handlePresetClick} style={{ "--primary": "#ae91e8", "--accent": "#fec38f", "--background": "#2c2734" }}>Sky</div>
-            <div className="preset-button dark sea" onClick={this.handlePresetClick} style={{ "--primary": "#5d8cc0", "--accent": "#34febb", "--background": "#1d262f" }}>Sea</div>
-            <div className="preset-button dark bee" onClick={this.handlePresetClick} style={{ "--primary": "#cccccc", "--accent": "#ffdc00", "--background": "#222222" }}>Bee</div>
-            <div className="preset-button dark gray" onClick={this.handlePresetClick} style={{ "--primary": "#9191a1", "--accent": "#a1bfce", "--background": "#272732" }}>Gray</div>
-            <div className="preset-button dark mono" onClick={this.handlePresetClick} style={{ "--primary": "#929292", "--accent": "#ffffff", "--background": "#222222" }}>Mono</div>
-            <div className="preset-button light" onClick={this.handlePresetClick} style={{ "--primary": "#6B3DF1", "--accent": "#A97E50", "--background": "#FBFAF9" }}>Light</div>
-            <div className="preset-button light snow" onClick={this.handlePresetClick} style={{ "--primary": "#6ba1f4", "--accent": "#d37e7e", "--background": "#FFFFFF" }}>Snow</div>
-            <div className="preset-button light apex" onClick={this.handlePresetClick} style={{ "--primary": "#999999", "--accent": "#000000", "--background": "#FFFFFF" }}>Apex</div>
-          </div>
           <div className="container">
+            <div className="presets">
+              <PresetSelect
+                items={presets}
+                selectedItem={this.state.selectedPreset}
+                onChange={this.handlePresetChange}
+              />
+            </div>
             <div className="inputs">
-              <ColorInput label="Primary" onChange={this.colorDidChange} selectedColor={inputPrimary} />
-              <ColorInput label="Accent" onChange={this.colorDidChange} selectedColor={inputAccent} />
-              <ColorInput label="Background" onChange={this.colorDidChange} selectedColor={inputBackground} />
+              <ColorInput
+                label="Primary"
+                onChange={this.colorDidChange}
+                selectedColor={inputPrimary}
+              />
+              <ColorInput
+                label="Accent"
+                onChange={this.colorDidChange}
+                selectedColor={inputAccent}
+              />
+              <ColorInput
+                label="Background"
+                onChange={this.colorDidChange}
+                selectedColor={inputBackground}
+              />
               <div className="color-swatch">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
               </div>
-              <button className="btn-input copy-snippet" onClick={this.handleCopySnippet}>
-                {this.state.copiedSnippet &&
+              <button
+                className="btn-input copy-snippet"
+                onClick={this.handleCopySnippet}
+              >
+                {this.state.copiedSnippet && (
                   <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>&nbsp;Copied!</div>
-                }
-                {!this.state.copiedSnippet && <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-code"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>&nbsp;Copy Snippet</div>}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-check"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>&nbsp;Copied!
+                  </div>
+                )}
+                {!this.state.copiedSnippet && (
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-code"
+                    >
+                      <polyline points="16 18 22 12 16 6" />
+                      <polyline points="8 6 2 12 8 18" />
+                    </svg>&nbsp;Copy Snippet
+                  </div>
+                )}
               </button>
               <Overlay isOpen={this.state.showOverlay}>
                 <h3>Sweet!</h3>
                 <p>
                   🖥 Open VS Code <br />
-                  🔎 Navigate to User Settings <code className="inline">Cmd/Ctrl + ,</code> <br />
+                  🔎 Navigate to User Settings{" "}
+                  <code className="inline">Cmd/Ctrl + ,</code> <br />
                   📋 Paste your new theme config
                 </p>
-                <button className="btn-input btn-input-modal copy-snippet" onClick={this.handleCloseOverlay}>
-                  <div>
-                    Got It
-                  </div>
+                <button
+                  className="btn-input btn-input-modal copy-snippet"
+                  onClick={this.handleCloseOverlay}
+                >
+                  <div>Got It</div>
                 </button>
               </Overlay>
-              <button className="btn-input copy-link" onClick={this.handleCopyLink}>
-                {this.state.copiedLink &&
+              <button
+                className="btn-input copy-link"
+                onClick={this.handleCopyLink}
+              >
+                {this.state.copiedLink && (
                   <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-check"><polyline points="20 6 9 17 4 12"></polyline></svg>&nbsp;Copied!</div>
-                }
-                {!this.state.copiedLink && <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>&nbsp;Copy Link</div>}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-check"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>&nbsp;Copied!
+                  </div>
+                )}
+                {!this.state.copiedLink && (
+                  <div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="feather feather-link"
+                    >
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>&nbsp;Copy Link
+                  </div>
+                )}
               </button>
               <div className="current-url">
                 <small>{this.state.currentUrl}</small>
@@ -204,7 +394,9 @@ export default class App extends React.Component {
               <pre>
                 "polychrome.{isDark ? "dark" : "light"}.primary": "{primary}",<br />
                 "polychrome.{isDark ? "dark" : "light"}.accent": "{accent}",<br />
-                "polychrome.{isDark ? "dark" : "light"}.background": "{background}",
+                "polychrome.{isDark ? "dark" : "light"}.background": "{
+                  background
+                }",
               </pre>
             </div>
             <div className="preview">
@@ -222,14 +414,55 @@ export default class App extends React.Component {
               --hoverBoxShadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
               --uiBg: ${theme.uiBg};
               --editorBackground: ${theme.editorBg};
-              --editorBackgroundContrast: ${color(theme.editorBg).contrast().hex()};
-              --bgContrastTransparent: ${color(theme.uiBg).contrast().setAlpha(26).rgb()};
+              --editorBackgroundContrast: ${color(theme.editorBg)
+            .contrast()
+            .hex()};
+              --bgContrastTransparent: ${color(theme.uiBg)
+            .contrast()
+            .setAlpha(26)
+            .rgb()};
             }
 
             .header {
               background: ${this.state.primary};
-              color: ${color(this.state.primary).contrast().hex()};
-              box-shadow: var(--hoverBoxShadow);
+              color: ${color(this.state.primary)
+            .contrast()
+            .hex()};
+              border-bottom: 1px solid rgba(0,0,0,.12);
+              box-shadow: 0 4px 2px rgba(0,0,0,.12);
+            }
+
+            .header a {
+              background: ${color(this.state.primary)
+            .contrast()
+            .hex()};
+              color: ${this.state.primary};
+              display: inline-block;
+              margin: 2px;
+              padding: 4px 6px;
+              text-decoration: none;
+              border-radius: 2px;
+            }
+            
+            .header a {
+              background: ${color(this.state.primary)
+            .contrast()
+            .hex()};
+              color: ${color(this.state.primary)
+            .contrast()
+            .contrast()
+            .hex()};
+              display: inline-block;
+              margin: 2px;
+              padding: 4px 6px;
+              text-decoration: none;
+              border-radius: 2px;
+              transition: .2s var(--swiftEasing);
+              box-shadow: 0 2px 4px rgba(0,0,0,.12);
+            }
+
+            .header a:hover {
+              box-shadow: 0 4px 12px rgba(0,0,0,.12);
             }
 
             .hero,
@@ -238,14 +471,17 @@ export default class App extends React.Component {
               margin: 0 auto;
               padding: var(--spacer);
             }
+
+
          
             .container {
               display: grid;
               grid-gap: var(--spacer);
               grid-template-areas:
+                "presets"
+                "preview"
                 "inputs"
                 "snippet"
-                "preview"
               ;
           }
 
@@ -268,7 +504,10 @@ export default class App extends React.Component {
           h3:after {
             content: "";
             display: inline-block;
-            background: ${color(this.state.background).contrast().setAlpha(12).rgb()}
+            background: ${color(this.state.background)
+            .contrast()
+            .setAlpha(12)
+            .rgb()}
             height: 1px;
           }
 
@@ -277,7 +516,9 @@ export default class App extends React.Component {
           }
 
           code.inline {
-            background: ${color(this.state.background).contrast().hex()};
+            background: ${color(this.state.background)
+            .contrast()
+            .hex()};
             padding: 6px 6px 4px 6px;
             border-radius: 2px;
             font-size: 1rem;
@@ -300,10 +541,7 @@ export default class App extends React.Component {
           }
 
           .presets {
-            display: grid;
-            grid-gap: calc(var(--spacer) / 2);
-            margin-bottom: var(--spacer);
-            grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+            grid-area: presets;
           }
 
           .preset-button {
@@ -318,7 +556,10 @@ export default class App extends React.Component {
             padding: 8px;
             position: relative;
             background: var(--background);
-            border: 1px solid ${color(theme.uiBg).contrast().setAlpha(22).rgb()};
+            border: 1px solid ${color(theme.uiBg)
+            .contrast()
+            .setAlpha(22)
+            .rgb()};
             transition: .3s var(--swiftEasing);
           }
 
@@ -361,13 +602,9 @@ export default class App extends React.Component {
 
           .color-swatch {
             display: flex;
-            border-radius: 5px;
-            box-shadow: inset 0 2px 0 rgba(0,0,0,.26);
             overflow: hidden;
             width: auto;
             margin: var(--spacer) 0;
-            background: ${this.state.background}
-            padding: calc(var(--spacer) / 2);
           }
 
           .color-swatch > div {
@@ -422,7 +659,9 @@ export default class App extends React.Component {
 
           .btn-input {
             background: ${theme.editorBg};
-            color: ${color(theme.uiBg).contrast().hex()};
+            color: ${color(theme.uiBg)
+            .contrast()
+            .hex()};
             border: 1px solid ${this.state.accent};
             border-radius: 4px;
             width: 100%;
@@ -437,7 +676,9 @@ export default class App extends React.Component {
           .btn-input.copy-snippet {
             border: none;
             background: ${this.state.accent};
-            color: ${color(this.state.accent).contrast().hex()};
+            color: ${color(this.state.accent)
+            .contrast()
+            .hex()};
             animation: pulse 4s infinite;
             box-shadow: 0 3px 4px rgba(0, 0, 0, .12)
           }
@@ -448,23 +689,33 @@ export default class App extends React.Component {
           }
 
           .btn-input:active {
-            background: ${color(theme.uiBg).lighten().hex()};
+            background: ${color(theme.uiBg)
+            .lighten()
+            .hex()};
           }
 
           .btn-input.copy-snippet:hover {
             cursor: pointer;
-            background: ${color(this.state.accent).saturate().lighten().hex()};
+            background: ${color(this.state.accent)
+            .saturate()
+            .lighten()
+            .hex()};
           }
 
           .btn-input.copy-snippet:active {
-            background: ${color(this.state.accent).saturate().darken().hex()};
+            background: ${color(this.state.accent)
+            .saturate()
+            .darken()
+            .hex()};
           }
 
           .snippet {
             grid-area: snippet;
             border-radius: 4px;
             border: none;
-            background: ${color(this.state.accent).setAlpha(6).rgb()};
+            background: ${color(this.state.accent)
+            .setAlpha(6)
+            .rgb()};
             font-size: var(--codeFontSize);
             padding: calc(var(--spacer) / 2);
             white-space: inherit;
@@ -477,8 +728,10 @@ export default class App extends React.Component {
           }
 
           .btn-copy-snippet {
-            background: ${ this.state.accent};
-            color: ${ color(this.state.accent).contrast().hex()};
+            background: ${this.state.accent};
+            color: ${color(this.state.accent)
+            .contrast()
+            .hex()};
             border: none;
             border-radius: 4px;
             font-size: var(--baseFontSize);
@@ -499,15 +752,26 @@ export default class App extends React.Component {
 
           .btn-copy-snippet:hover {
             cursor: pointer;
-            background: ${ color(this.state.accent).saturate().lighten().hex()};
+            background: ${color(this.state.accent)
+            .saturate()
+            .lighten()
+            .hex()};
           }
 
           @keyframes pulse {
             60% {
-              box-shadow: 0 3px 4px rgba(0, 0, 0, .12), 0 0 0 0 ${ color(this.state.accent).setAlpha(50).rgb()};
+              box-shadow: 0 3px 4px rgba(0, 0, 0, .12), 0 0 0 0 ${color(
+            this.state.accent
+          )
+            .setAlpha(50)
+            .rgb()};
             }
             100% {
-              box-shadow: 0 3px 4px rgba(0, 0, 0, .12), 0 0 100px 12px ${ color(this.state.accent).setAlpha(1).rgb()};
+              box-shadow: 0 3px 4px rgba(0, 0, 0, .12), 0 0 100px 12px ${color(
+            this.state.accent
+          )
+            .setAlpha(1)
+            .rgb()};
             }
           }
 
@@ -528,6 +792,7 @@ export default class App extends React.Component {
               grid-gap: var(--spacer);
               grid-template-columns: 200px 1fr;
               grid-template-areas:
+                "presets preview"
                 "inputs preview"
                 "snippet snippet"
               ;
@@ -540,32 +805,46 @@ export default class App extends React.Component {
               --spacer: 32px;
             }
           }
+
+          @keyframes dropIn {
+            from {
+              opacity: 0;
+              transform: translateY(-64px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
           `}</style>
         <style jsx global>{`
-            html {
-              box-sizing: border-box;
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-                Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-              font-weight: 400;
-              font-size: 10px;
-              transition: .2s var(--swiftEasing);
-              background: ${ theme.uiBg};
-              color: ${ color(theme.uiBg).contrast().hex()};
-              text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
-            }
-                        
-            *,
+          html {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+              Helvetica, Arial, sans-serif, "Apple Color Emoji",
+              "Segoe UI Emoji", "Segoe UI Symbol";
+            font-weight: 400;
+            font-size: 10px;
+            transition: 0.2s var(--swiftEasing);
+            background: ${theme.editorBg};
+            color: ${color(theme.editorBg)
+            .contrast()
+            .hex()};
+            text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
+          }
+
+          *,
             *: before,
             *: after {
-              box-sizing: inherit;
-            }
+            box-sizing: inherit;
+          }
 
-            body {
-              margin: 0;
-              font-size: 1.6rem;
-            }
-          `}</style>
+          body {
+            margin: 0;
+            font-size: 1.6rem;
+          }
+        `}</style>
       </div>
-    )
+    );
   }
 }

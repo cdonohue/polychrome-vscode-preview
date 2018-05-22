@@ -42,6 +42,7 @@ export default (props) => {
           flex: 1 1 auto;
           background: rgba(255,255,255,.85);
           border-radius: 3px;
+          border: 1px solid var(--bgContrastTransparent);
           padding: 4px;
         }
 
