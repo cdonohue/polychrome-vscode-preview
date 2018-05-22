@@ -248,7 +248,7 @@ export default class App extends React.Component {
               Simply install the theme extension to VS Code using the link above. Then, modify the colors below to generate your favorite duotone theme. Once you are satisfied, simply copy the generated snippet and paste it into your VS Code user settings file.
             </p>
             <p>
-              The url on this page will update as you make selections. Share your favorite with your friends!
+              The url on this page will update as you make selections. Share your favorites with your friends!
             </p>
           </div>
         </div>
