@@ -91,9 +91,8 @@ const DropdownButton = props => {
       <style jsx>{`
         .btn {
           cursor: pointer;
-          box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16),
-            0 3px 6px rgba(0, 0, 0, 0.23);
-          border: none;
+          box-shadow: rgba(0, 0, 0, 0.12) 0px 3px 4px;
+          border: 1px solid var(--bgContrastTransparent);
           text-align: left;
           height: 44px;
           width: 100%;
