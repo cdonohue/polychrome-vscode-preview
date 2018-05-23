@@ -1,6 +1,5 @@
-import color from "polychrome"
-import { debounce } from "lodash"
 import getColorName from "../utils/getColorName"
+import DebounceInput from "react-debounce-input"
 
 export default (props) => {
   const onColorChange = (e) => {
@@ -12,10 +11,41 @@ export default (props) => {
       <label>{props.label}</label>
       <div className="input">
         <div className="textInput">
-          <input onChange={onColorChange} type="text" value={props.selectedColor} />
+          <DebounceInput
+            debounceTimeout={100}
+            style={{
+              outline: "none",
+              width: "100%",
+              fontSize: "var(--baseFontSize)",
+              lineHeight: "2",
+              padding: "0 4px",
+              background: "transparent",
+              border: "none",
+              fontFamily: "monospace",
+            }}
+            value={props.selectedColor}
+            type="text"
+            onChange={onColorChange}
+          />
+          {/* <input onChange={onColorChange} type="text" value={props.selectedColor} /> */}
         </div>
         <div className="colorInput">
-          <input onChange={onColorChange} type="color" value={props.selectedColor} />
+          <DebounceInput
+            debounceTimeout={100}
+            className="inputControl"
+            value={props.selectedColor}
+            type="color"
+            style={{
+              width: "80px",
+              cursor: "pointer",
+              height: "80px",
+              position: "absolute",
+              top: "-16px",
+              left: "-16px"
+            }}
+            onChange={onColorChange}
+          />
+          {/* <input onChange={onColorChange} type="color" value={props.selectedColor} /> */}
         </div>
       </div>
       <p>
@@ -46,17 +76,6 @@ export default (props) => {
           padding: 4px;
         }
 
-        .textInput > input {
-          outline: none;
-          width: 100%;
-          font-size: var(--baseFontSize);
-          line-height: 2;
-          padding: 0 4px;
-          background: transparent;
-          border: none;
-          font-family: monospace;
-        }
-
         .colorInput {
           flex: 0 0 24px;
           border-radius: 44px;
@@ -73,18 +92,6 @@ export default (props) => {
         .colorInput:hover {
           cursor: pointer;
           box-shadow: var(--hoverBoxShadow);
-        }
-
-        .colorInput > input {
-          width: 80px;
-          height: 80px;
-          position: absolute;
-          top: -16px;
-          left: -16px;
-        }
-
-        .colorInput > input:hover {
-          cursor: pointer;
         }
 
         p {
