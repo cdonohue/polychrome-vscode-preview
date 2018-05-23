@@ -230,7 +230,6 @@ export default class App extends React.Component {
 
     return (
       <div className="page">
-        <link rel="stylesheet" href="https://unpkg.com/react-select@1.2.1/dist/react-select.css" />
         <Head>
           <title>🎨 Polychrome theme viewer</title>
           <meta
@@ -411,7 +410,8 @@ export default class App extends React.Component {
               --headerFontSize: 16px;
               --spacer: 16px;
               --swiftEasing: cubic-bezier(.25,.8,.25,1);
-              --hoverBoxShadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+              --hoverBoxShadow: 0 3px 6px rgba(0, 0, 0, 0.16),
+              0 3px 6px rgba(0, 0, 0, 0.23);
               --uiBg: ${theme.uiBg};
               --editorBackground: ${theme.editorBg};
               --editorBackgroundContrast: ${color(theme.editorBg)
@@ -428,8 +428,7 @@ export default class App extends React.Component {
               color: ${color(this.state.primary)
             .contrast()
             .hex()};
-              border-bottom: 1px solid rgba(0,0,0,.12);
-              box-shadow: 0 4px 2px rgba(0,0,0,.12);
+              box-shadow: var(--hoverBoxShadow);
             }
 
             .header a {
