@@ -428,7 +428,8 @@ export default class App extends React.Component {
               color: ${color(this.state.primary)
             .contrast()
             .hex()};
-              box-shadow: var(--hoverBoxShadow);
+              border-bottom: 1px solid ${color(this.state.primary).darken().hex()};
+              box-shadow: 0 4px 16px rgba(0,0,0,.26);
             }
 
             .header a {
