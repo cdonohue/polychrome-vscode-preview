@@ -161,6 +161,7 @@ export default class App extends React.Component {
       primary,
       accent,
       background,
+      selectedPreset: preset,
       inputPrimary: primary,
       inputAccent: accent,
       inputBackground: background,
@@ -221,6 +222,7 @@ export default class App extends React.Component {
       accent,
       background,
       primary,
+      selectedPreset,
       inputAccent,
       inputBackground,
       inputPrimary

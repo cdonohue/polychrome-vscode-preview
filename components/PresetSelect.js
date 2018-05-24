@@ -140,8 +140,8 @@ export default ({ items, selectedItem, onChange }) => {
       }) => (
           <div>
             <DropdownButton {...getToggleButtonProps()} {...selectedItem}>
-              Try a preset
-          </DropdownButton>
+              {selectedItem.name}
+            </DropdownButton>
             <div className="dropdown-wrapper"
               style={{
                 position: "relative"
