@@ -127,7 +127,7 @@ const DropdownButton = props => {
   );
 };
 
-export default ({ items, selectedItem, onChange }) => {
+export default ({ items, name, selectedItem, onChange }) => {
   return (
     <Downshift
       itemToString={item => JSON.stringify(item)}
@@ -140,7 +140,7 @@ export default ({ items, selectedItem, onChange }) => {
       }) => (
           <div>
             <DropdownButton {...getToggleButtonProps()} {...selectedItem}>
-              {selectedItem.name}
+              {name}
             </DropdownButton>
             <div className="dropdown-wrapper"
               style={{
