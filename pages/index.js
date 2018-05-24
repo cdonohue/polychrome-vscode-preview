@@ -431,38 +431,25 @@ export default class App extends React.Component {
               border-bottom: 1px solid ${color(this.state.primary).darken().hex()};
               box-shadow: 0 4px 16px rgba(0,0,0,.26);
             }
-
-            .header a {
-              background: ${color(this.state.primary)
-            .contrast()
-            .hex()};
-              color: ${this.state.primary};
-              display: inline-block;
-              margin: 2px;
-              padding: 4px 6px;
-              text-decoration: none;
-              border-radius: 2px;
-            }
             
             .header a {
               background: ${color(this.state.primary)
             .contrast()
             .hex()};
-              color: ${color(this.state.primary)
-            .contrast()
-            .contrast()
-            .hex()};
+              color: ${this.state.primary};
+              border: none;
               display: inline-block;
               margin: 2px;
+              font-weight: 500;
               padding: 4px 6px;
               text-decoration: none;
-              border-radius: 2px;
+              border-radius: 4px;
               transition: .2s var(--swiftEasing);
               box-shadow: 0 2px 4px rgba(0,0,0,.12);
             }
 
             .header a:hover {
-              box-shadow: 0 4px 12px rgba(0,0,0,.12);
+              box-shadow: 0 4px 12px rgba(0,0,0,.26);
             }
 
             .hero,
