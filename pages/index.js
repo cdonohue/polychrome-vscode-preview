@@ -436,7 +436,8 @@ export default class App extends React.Component {
               background: ${color(this.state.primary)
             .contrast()
             .hex()};
-              color: ${this.state.primary};
+              color: ${color(this.state.primary).mix(color(this.state.primary)
+                .contrast().contrast()).hex()};
               border: none;
               display: inline-block;
               margin: 2px;
