@@ -87,6 +87,7 @@ export default class App extends React.Component {
     primary: "#a59ccc",
     accent: "#ffe685",
     background: "#2a2833",
+    name: "Try a preset",
     inputPrimary: "#a59ccc",
     inputAccent: "#ffe685",
     inputBackground: "#2a2833",
@@ -152,15 +153,34 @@ export default class App extends React.Component {
       console.error(err);
       return;
     }
+
+    this.determineName();
+  };
+
+  determineName = () => {
+    let name = "Try a preset";
+
+    presets.map( (preset) => {
+      if (
+          this.state.primary == preset.primary
+          && this.state.accent == preset.accent
+          && this.state.background == preset.background
+        ) {
+        name = preset.name;
+      }
+    });
+
+    this.setState({ name: name });
   };
 
   handlePresetChange = preset => {
-    const { accent, background, primary } = preset;
+    const { accent, background, name, primary } = preset;
 
     this.setState({
       primary,
       accent,
       background,
+      name: name,
       inputPrimary: primary,
       inputAccent: accent,
       inputBackground: background,
@@ -221,6 +241,7 @@ export default class App extends React.Component {
       accent,
       background,
       primary,
+      selectedPreset,
       inputAccent,
       inputBackground,
       inputPrimary
@@ -258,6 +279,7 @@ export default class App extends React.Component {
                 items={presets}
                 selectedItem={this.state.selectedPreset}
                 onChange={this.handlePresetChange}
+                name={this.state.name}
               />
             </div>
             <div className="inputs">
